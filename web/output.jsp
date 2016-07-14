@@ -22,7 +22,7 @@
 <% } else {%>
 <div id="result">Your request was executed successfully</div>
 <%if(headerOpcode.equals(UDPMessageProtos.Header.Opcode.LISTALL)
-        || headerOpcode.equals(UDPMessageProtos.Header.Opcode.LISTALL)) {%>
+        || headerOpcode.equals(UDPMessageProtos.Header.Opcode.FIND)) {%>
 <%=reponseFromServer.getMovieList()%>
 <%}}%>
 </body>

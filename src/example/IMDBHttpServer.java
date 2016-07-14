@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import com.nutanix.MovieProtos.Movie;
 
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.Date;
  */
 public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter printo = response.getWriter();
         int selectedAction = Integer.parseInt(request.getParameter("IMDBAction"));
         Header.Builder header = Header.newBuilder();
         header.setOpcode(UDPMessageProtos.Header.Opcode.values()[selectedAction]);
@@ -72,6 +74,8 @@ public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
 
         String dateOfRelease = request.getParameter("dateOfRelease");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        newMovie.addMovieGenre(Movie.Genre.valueOf(Integer.parseInt(request.getParameter("Genre"))));
         try {
         Date dateOfR = sdf.parse(dateOfRelease);
             Movie.Date.Builder date = Movie.Date.newBuilder();
@@ -81,7 +85,7 @@ public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
             date.setDay(dateOfR.getDay());
 
             newMovie.setDateOfRelease(date.build());
-        } catch(ParseException ex) {
+        } catch (ParseException ex) {
 
         }
         clientMessage.setMovie(newMovie.build());
@@ -90,6 +94,10 @@ public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
         clientMessage.setMovieToBeDeleted(request.getParameter("DeleteText"));
     }
     private void takeInputFindMovie(ClientSideMessage.Builder clientMessage,HttpServletRequest request) {
+
+        clientMessage.setFindOrUpdateKey(ClientSideMessage.
+                FindOrUpdate_Keys.values()[Integer.parseInt(request.getParameter("searchValue"))]);
+        clientMessage.setSearchPhrase(request.getParameter("searchPhrase"));
 
     }
     private void takeInputUpdateMovie(ClientSideMessage.Builder clientMessage,HttpServletRequest request) {
