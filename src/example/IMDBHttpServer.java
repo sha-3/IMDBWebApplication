@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -24,11 +25,10 @@ import java.util.Date;
  */
 public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter printo = response.getWriter();
         int selectedAction = Integer.parseInt(request.getParameter("IMDBAction"));
         Header.Builder header = Header.newBuilder();
         header.setOpcode(UDPMessageProtos.Header.Opcode.values()[selectedAction]);
-        header.setMessageUUID("gh");
+        header.setMessageUUID(UUID.randomUUID().toString());
         header.build();
 
         MovieActionFactory movieActionFactory = new MovieActionFactory();
@@ -48,7 +48,7 @@ public class IMDBHttpServer extends javax.servlet.http.HttpServlet {
                 takeInputDeleteMovie(clientMessage, request);
                 break;
             case UPDATE:
-                takeInputUpdateMovie(clientMessage, request);
+                takeInputAddMovie(clientMessage, request);
                 break;
             case FIND:
                 takeInputFindMovie(clientMessage, request);
